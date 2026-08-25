@@ -147,10 +147,10 @@
   .door-open-btn.hide{opacity:0 !important; pointer-events:none !important; visibility:hidden !important;}
   /* Show the opening button 1.5s after the envelope poster appears. */
   .door-open-btn.delayed{opacity:0 !important; pointer-events:none !important; visibility:hidden !important; transform:translateX(-50%) translateY(8px);}
-  .door-open-btn.delayed.show{opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);}
+  .door-open-btn.delayed.show{opacity:1 !important; pointer-events:auto !important; visibility:visible !important; transform:translateX(-50%) translateY(0);}
   /* Show the opening button 1.5s after the envelope poster appears. */
   .door-open-btn.delayed{opacity:0 !important; pointer-events:none !important; visibility:hidden !important; transform:translateX(-50%) translateY(8px);}
-  .door-open-btn.delayed.show{opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0);}
+  .door-open-btn.delayed.show{opacity:1 !important; pointer-events:auto !important; visibility:visible !important; transform:translateX(-50%) translateY(0);}
 
   .door-hint{
     margin-top:22px; color:#fff; font-size:17px; font-weight:700;
@@ -725,15 +725,12 @@
 
     const p = doorVideo.play();
     if(p && typeof p.catch === 'function') p.catch(() => {
-      // Do not show the prompt again. Keep the poster if playback is rejected.
+      // Playback failed: never restart the 1.5s prompt cycle.
+      // Restore the single button immediately so the user can retry.
       introStarted = false;
-      doorOpenBtn.classList.remove('hide');
-      doorOpenBtn.classList.add('delayed');
-      doorVideo.classList.remove('playing');
-      // If playback is rejected, allow the same single 1.5s prompt cycle again.
-      setTimeout(() => {
-        if(!introStarted) doorOpenBtn.classList.add('show');
-      }, 1500);
+      doorVideo.classList.remove('playing', 'video-visible');
+      doorOpenBtn.classList.remove('hide', 'delayed');
+      doorOpenBtn.classList.add('show');
     });
   }
 
